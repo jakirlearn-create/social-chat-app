@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import './PostsPage.css';
 
 const PostsPage = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
+  const { t } = useLanguage();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
@@ -243,7 +245,7 @@ const PostsPage = () => {
   if (loading) {
     return (
       <div className={`posts-page ${theme === 'dark' ? 'dark-theme' : 'light-theme'}`}>
-        <div className="loading-spinner">Loading posts...</div>
+        <div className="loading-spinner">{t('common.loading')}</div>
       </div>
     );
   }

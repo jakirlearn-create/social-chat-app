@@ -1,0 +1,182 @@
+.admin-options-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  padding: 20px;
+}
+
+.options-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 100%;
+  padding: 40px;
+  position: relative;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: transparent;
+  border: none;
+  color: #666;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.admin-icon {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: swing 2s infinite ease-in-out;
+}
+
+@keyframes swing {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-5deg);
+  }
+  75% {
+    transform: rotate(5deg);
+  }
+}
+
+.options-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  margin: 0 0 10px 0;
+}
+
+.options-subtitle {
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+  margin: 0 0 30px 0;
+}
+
+.options-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.option-btn {
+  padding: 25px;
+  border: 2px solid #e0e0e0;
+  border-radius: 15px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.option-btn:hover {
+  transform: translateY(-5px);
+  border-color: transparent;
+}
+
+.login-option:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.register-option:hover {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  box-shadow: 0 10px 30px rgba(79, 172, 254, 0.4);
+}
+
+.option-btn:hover .btn-icon,
+.option-btn:hover h3,
+.option-btn:hover p {
+  color: white;
+}
+
+.btn-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+}
+
+.option-btn h3 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0 5px 0;
+  transition: all 0.3s ease;
+}
+
+.option-btn p {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+  transition: all 0.3s ease;
+}
+
+.info-box {
+  margin-top: 30px;
+  padding: 15px;
+  background: #e7f3ff;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.info-box p {
+  font-size: 13px;
+  color: #0066cc;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .options-card {
+    padding: 30px 20px;
+  }
+
+  .options-title {
+    font-size: 24px;
+  }
+
+  .admin-icon {
+    font-size: 56px;
+  }
+
+  .option-btn {
+    padding: 20px;
+  }
+
+  .btn-icon {
+    font-size: 36px;
+  }
+
+  .option-btn h3 {
+    font-size: 18px;
+  }
+}

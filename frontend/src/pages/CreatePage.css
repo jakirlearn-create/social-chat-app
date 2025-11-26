@@ -1,0 +1,450 @@
+/* ============================================
+   CREATE PAGE - DUAL THEME SYSTEM
+   Light & Dark Mode with 60fps Animations
+   ============================================ */
+
+/* ========== THEME VARIABLES ========== */
+
+.create-page.light-theme {
+  --bg-primary: #FFFFFF;
+  --bg-card: #F7F7F7;
+  --text-primary: #000000;
+  --text-secondary: #555555;
+  --border-color: #DCDCDC;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(0, 0, 0, 0.15);
+  --icon-tint: brightness(1);
+  --gradient-start: #667eea;
+  --gradient-end: #764ba2;
+  --feature-bg: rgba(102, 126, 234, 0.1);
+  --feature-text: #667eea;
+}
+
+.create-page.dark-theme {
+  --bg-primary: #0F0F0F;
+  --bg-card: #1B1B1B;
+  --text-primary: #FFFFFF;
+  --text-secondary: #AAAAAA;
+  --border-color: #333333;
+  --shadow-color: rgba(255, 255, 255, 0.05);
+  --shadow-hover: rgba(255, 255, 255, 0.1);
+  --icon-tint: brightness(1.2);
+  --gradient-start: #667eea;
+  --gradient-end: #764ba2;
+  --feature-bg: rgba(102, 126, 234, 0.15);
+  --feature-text: #8a9fff;
+}
+
+/* ========== BASE PAGE STYLES ========== */
+
+.create-page {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  padding: 20px;
+  padding-bottom: 100px;
+  transition: background-color 0.3s ease;
+  animation: pageEnter 0.4s ease-out;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========== BACK BUTTON ========== */
+
+.create-back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 25px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+}
+
+.create-back-btn:hover {
+  transform: translateX(-4px);
+  box-shadow: 0 4px 12px var(--shadow-hover);
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: white;
+  border-color: transparent;
+}
+
+.create-back-btn:active {
+  transform: translateX(-2px) scale(0.98);
+}
+
+/* ========== HEADER SECTION ========== */
+
+.create-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 30px;
+  padding: 10px 0;
+}
+
+.create-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  margin: 0;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: titleFade 0.5s ease-out;
+}
+
+@keyframes titleFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-icon-btn {
+  position: absolute;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--bg-card);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: all 0.3s ease;
+}
+
+.settings-icon-btn img {
+  width: 24px;
+  height: 24px;
+  filter: var(--icon-tint);
+}
+
+.settings-icon-btn:hover {
+  transform: rotate(90deg) scale(1.1);
+  box-shadow: 0 4px 12px var(--shadow-hover);
+}
+
+.settings-icon-btn:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+/* ========== TOOLS GRID ========== */
+
+.create-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.create-tools-grid.animate .create-tool-card {
+  animation: cardStagger 0.5s ease-out backwards;
+}
+
+@keyframes cardStagger {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ========== TOOL CARDS ========== */
+
+.create-tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.create-tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.create-tool-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 24px var(--shadow-hover);
+  border-color: var(--gradient-start);
+}
+
+.create-tool-card:hover::before {
+  opacity: 0.05;
+}
+
+.create-tool-card:active {
+  transform: translateY(-4px) scale(0.98);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+/* ========== ICON SYSTEM ========== */
+
+.tool-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.tool-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: var(--icon-tint);
+  transition: all 0.3s ease;
+}
+
+.create-tool-card:hover .tool-icon {
+  transform: scale(1.15) rotate(5deg);
+  filter: var(--icon-tint) drop-shadow(0 4px 8px rgba(102, 126, 234, 0.3));
+}
+
+/* Icon fallback gradient placeholder */
+.tool-icon-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  animation: iconGlow 2s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+  }
+}
+
+/* ========== TEXT STYLES ========== */
+
+.tool-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px 0;
+  z-index: 1;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.tool-description {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+  z-index: 1;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* ========== FEATURE TAGS ========== */
+
+.tool-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  z-index: 1;
+  position: relative;
+}
+
+.feature-tag {
+  font-size: 10px;
+  padding: 4px 8px;
+  background: var(--feature-bg);
+  color: var(--feature-text);
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.create-tool-card:hover .feature-tag {
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  color: white;
+  transform: scale(1.05);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .create-tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .create-tool-card {
+    padding: 16px;
+  }
+
+  .tool-icon-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+
+  .create-title {
+    font-size: 24px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .create-page {
+    padding: 15px;
+    padding-bottom: 90px;
+  }
+
+  .create-back-btn {
+    top: 15px;
+    left: 15px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .create-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .create-tool-card {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .tool-icon-wrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .tool-title {
+    font-size: 14px;
+  }
+
+  .tool-description {
+    font-size: 11px;
+  }
+
+  .feature-tag {
+    font-size: 9px;
+    padding: 3px 6px;
+  }
+
+  .create-title {
+    font-size: 22px;
+  }
+
+  .settings-icon-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .settings-icon-btn img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ========== SMOOTH TRANSITIONS ========== */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.create-page * {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transitions during theme switch for instant update */
+.create-page.theme-switching * {
+  transition: none !important;
+}
+
+/* ========== ACCESSIBILITY ========== */
+
+.create-tool-card:focus-visible {
+  outline: 2px solid var(--gradient-start);
+  outline-offset: 2px;
+}
+
+.settings-icon-btn:focus-visible {
+  outline: 2px solid var(--gradient-start);
+  outline-offset: 2px;
+}
+
+/* ========== PERFORMANCE OPTIMIZATIONS ========== */
+
+.create-tool-card {
+  contain: layout style paint;
+  content-visibility: auto;
+}
+
+/* GPU acceleration for animations */
+.create-tool-card,
+.tool-icon,
+.settings-icon-btn {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}

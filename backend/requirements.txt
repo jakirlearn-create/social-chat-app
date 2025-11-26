@@ -4,4 +4,4 @@ Firebase-Admin==6.2.0
 python-dotenv==1.0.0
 Werkzeug==3.0.0
 Requests==2.31.0
-PyJWT==2.8.1
+PyJWT==2.10.1

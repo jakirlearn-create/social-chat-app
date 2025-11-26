@@ -1,0 +1,125 @@
+﻿.background-preview-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.preview-overlay {
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.preview-card {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+.preview-card h1 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+}
+
+.preview-info {
+  text-align: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.preview-info h2 {
+  margin: 0 0 10px 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.preview-price {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.preview-sample {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f5f7fa;
+  border-radius: 12px;
+}
+
+.sample-profile-card {
+  text-align: center;
+}
+
+.sample-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 32px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.sample-profile-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.sample-profile-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-cancel,
+.btn-apply-preview {
+  flex: 1;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.btn-cancel:hover {
+  background: #d0d0d0;
+  transform: scale(1.02);
+}
+
+.btn-apply-preview {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.btn-apply-preview:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px rgba(102,126,234,0.4);
+}

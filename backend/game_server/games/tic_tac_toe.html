@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            margin: 20px auto;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cell:hover:not(.taken) {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+        .cell.taken { cursor: not-allowed; }
+        .cell.x { color: #667eea; }
+        .cell.o { color: #764ba2; }
+        .status {
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .status.win { color: #4caf50; }
+        .status.lose { color: #f44336; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+        .coins {
+            font-size: 18px;
+            color: #666;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>⭕ Tic Tac Toe ❌</h1>
+        <div class="coins">💰 Balance: <span id="balance">Loading...</span> coins</div>
+        <div class="status" id="status">Your turn (X)</div>
+        <div class="board" id="board"></div>
+        <button onclick="resetGame()">New Game</button>
+        <button onclick="exitGame()">Exit</button>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8001/api';
+        let userId = 'user123'; // Replace with actual user ID
+        let balance = 0;
+        let gameBoard = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = true;
+        const ENTRY_FEE = 5;
+        const REWARD = 10;
+
+        const winConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+
+        async function loadBalance() {
+            try {
+                const res = await fetch(`${API_URL}/wallet/${userId}`);
+                const data = await res.json();
+                balance = data.balance;
+                document.getElementById('balance').textContent = balance;
+            } catch (err) {
+                console.error('Failed to load balance:', err);
+                document.getElementById('balance').textContent = 'Error';
+            }
+        }
+
+        async function deductCoins() {
+            try {
+                const res = await fetch(`${API_URL}/deductCoin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        amount: ENTRY_FEE,
+                        game_name: 'tic_tac_toe'
+                    })
+                });
+                const data = await res.json();
+                balance = data.new_balance;
+                document.getElementById('balance').textContent = balance;
+                return true;
+            } catch (err) {
+                alert('Failed to deduct coins. Please try again.');
+                return false;
+            }
+        }
+
+        async function rewardCoins() {
+            try {
+                const res = await fetch(`${API_URL}/rewardCoin`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        amount: REWARD,
+                        game_name: 'tic_tac_toe'
+                    })
+                });
+                const data = await res.json();
+                balance = data.new_balance;
+                document.getElementById('balance').textContent = balance;
+            } catch (err) {
+                console.error('Failed to reward coins:', err);
+            }
+        }
+
+        function createBoard() {
+            const boardElement = document.getElementById('board');
+            boardElement.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('button');
+                cell.classList.add('cell');
+                cell.dataset.index = i;
+                cell.addEventListener('click', () => handleCellClick(i));
+                boardElement.appendChild(cell);
+            }
+        }
+
+        function handleCellClick(index) {
+            if (!gameActive || gameBoard[index] !== '' || currentPlayer !== 'X') return;
+            
+            makeMove(index, 'X');
+            
+            if (checkWin('X')) {
+                endGame('You win! 🎉', true);
+            } else if (checkDraw()) {
+                endGame('Draw! 🤝', false);
+            } else {
+                currentPlayer = 'O';
+                document.getElementById('status').textContent = "Computer's turn...";
+                setTimeout(computerMove, 500);
+            }
+        }
+
+        function makeMove(index, player) {
+            gameBoard[index] = player;
+            const cells = document.querySelectorAll('.cell');
+            cells[index].textContent = player;
+            cells[index].classList.add('taken', player.toLowerCase());
+        }
+
+        function computerMove() {
+            if (!gameActive) return;
+            
+            // Simple AI: random available move
+            const available = gameBoard.map((cell, index) => cell === '' ? index : null).filter(v => v !== null);
+            if (available.length === 0) return;
+            
+            const move = available[Math.floor(Math.random() * available.length)];
+            makeMove(move, 'O');
+            
+            if (checkWin('O')) {
+                endGame('Computer wins! 😞', false);
+            } else if (checkDraw()) {
+                endGame('Draw! 🤝', false);
+            } else {
+                currentPlayer = 'X';
+                document.getElementById('status').textContent = 'Your turn (X)';
+            }
+        }
+
+        function checkWin(player) {
+            return winConditions.some(condition => {
+                return condition.every(index => gameBoard[index] === player);
+            });
+        }
+
+        function checkDraw() {
+            return gameBoard.every(cell => cell !== '');
+        }
+
+        async function endGame(message, won) {
+            gameActive = false;
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.classList.add(won ? 'win' : 'lose');
+            
+            if (won) {
+                await rewardCoins();
+            }
+        }
+
+        async function resetGame() {
+            if (balance < ENTRY_FEE) {
+                alert('Insufficient balance! You need ' + ENTRY_FEE + ' coins to play.');
+                return;
+            }
+            
+            const confirmed = confirm(`Start new game? Entry fee: ${ENTRY_FEE} coins`);
+            if (!confirmed) return;
+            
+            const success = await deductCoins();
+            if (!success) return;
+            
+            gameBoard = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            document.getElementById('status').textContent = 'Your turn (X)';
+            document.getElementById('status').classList.remove('win', 'lose');
+            createBoard();
+        }
+
+        function exitGame() {
+            if (confirm('Are you sure you want to exit?')) {
+                window.parent.postMessage({ action: 'closeGame' }, '*');
+            }
+        }
+
+        // Initialize
+        loadBalance();
+        createBoard();
+        
+        // Auto-start first game
+        setTimeout(async () => {
+            if (balance >= ENTRY_FEE) {
+                await deductCoins();
+            } else {
+                alert('Insufficient balance to start game!');
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

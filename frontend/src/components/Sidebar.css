@@ -1,0 +1,181 @@
+.hamburger-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 999;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
+}
+
+.hamburger-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.hamburger-btn span {
+  width: 24px;
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100vh;
+  background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 950;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-user-info {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar-user-pic {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #667eea;
+}
+
+.sidebar-user-details h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.sidebar-user-details p {
+  margin: 5px 0 0 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: #e0e0e0;
+  margin: 0;
+}
+
+.sidebar-menu {
+  padding: 10px 0;
+  list-style: none;
+  margin: 0;
+}
+
+.menu-item {
+  padding: 0;
+}
+
+.menu-btn {
+  width: 100%;
+  padding: 15px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 15px;
+  color: #333;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.menu-btn:hover {
+  background: #e9ecef;
+  border-left-color: #667eea;
+  color: #667eea;
+}
+
+.menu-icon {
+  font-size: 20px;
+  min-width: 24px;
+}
+
+.menu-label {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+  }
+}
+
+/* Videos / Honors white box */
+.sidebar-whitebox {
+  background: #fff;
+  margin: 12px 12px 24px 12px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.vh-stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.vh-item {
+  padding: 14px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.vh-item.active,
+.vh-item:hover {
+  background: #f6f8ff;
+}
+
+.vh-title { font-weight: 600; color: #222; }
+
+.vh-content { padding: 12px 16px; }
+
+.vh-panel { background: transparent; }
+.vh-panel h4 { margin: 0 0 6px 0; }
+.vh-panel .muted { color: #777; margin: 6px 0 12px 0; }
+.link-btn { background: transparent; border: 1px solid #667eea; color: #667eea; padding: 6px 10px; border-radius: 6px; cursor: pointer; }

@@ -1,47 +1,132 @@
-import axios from 'axios';
-import { API_BASE_URL } from '../config/firebase';
+﻿import safeLocalStorage from "../utils/safeStorage";
+﻿import API_BASE_URL from '../config/api';
 
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+class AuthService {
+  async signup(data) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
 
-// Add token to requests
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('authToken');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Signup failed');
+      }
+
+      const result = await response.json();
+      if (result.token) {
+        safeLocalStorage.setItem('token', result.token);
+        safeLocalStorage.setItem('user', JSON.stringify(result.user));
+      }
+      return result.user;
+    } catch (error) {
+      console.error('Auth Service Error:', error);
+      throw error;
+    }
   }
-  return config;
-});
 
-export const authService = {
-  signup: async (userData) => {
-    return apiClient.post('/auth/signup', userData);
-  },
-  
-  login: async (credentials) => {
-    return apiClient.post('/auth/login', credentials);
-  },
-  
-  forgotPassword: async (data) => {
-    return apiClient.post('/auth/forgot-password', data);
-  },
-  
-  googleAuth: async (googleToken) => {
-    return apiClient.post('/auth/google', { google_token: googleToken });
-  },
-  
-  facebookAuth: async (facebookToken) => {
-    return apiClient.post('/auth/facebook', { facebook_token: facebookToken });
-  },
+  async login(credentials) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+      });
 
-  logout: () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-  },
-};
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Login failed');
+      }
 
-export default apiClient;
+      const result = await response.json();
+      if (result.token) {
+        safeLocalStorage.setItem('token', result.token);
+        safeLocalStorage.setItem('user', JSON.stringify(result.user));
+      }
+      return result.user;
+    } catch (error) {
+      console.error('Auth Service Error:', error);
+      throw error;
+    }
+  }
+
+  async getCurrentUser() {
+    try {
+      const token = safeLocalStorage.getItem('token');
+      if (!token) return null;
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch user');
+
+      const result = await response.json();
+      return result.user;
+    } catch (error) {
+      console.error('Get User Error:', error);
+      return null;
+    }
+  }
+
+  async updateProfile(data) {
+    try {
+      const token = safeLocalStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) throw new Error('Failed to update profile');
+
+      const result = await response.json();
+      safeLocalStorage.setItem('user', JSON.stringify(result.user));
+      return result.user;
+    } catch (error) {
+      console.error('Update Profile Error:', error);
+      throw error;
+    }
+  }
+
+  async getAllUsers() {
+    try {
+      const token = safeLocalStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/api/users`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch users');
+
+      const result = await response.json();
+      return result.users || [];
+    } catch (error) {
+      console.error('Get All Users Error:', error);
+      return [];
+    }
+  }
+
+  logout() {
+    safeLocalStorage.removeItem('token');
+    safeLocalStorage.removeItem('user');
+  }
+
+  getToken() {
+    return safeLocalStorage.getItem('token');
+  }
+
+  getUser() {
+    const user = safeLocalStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
+  }
+}
+
+const authService = new AuthService();
+export default authService;

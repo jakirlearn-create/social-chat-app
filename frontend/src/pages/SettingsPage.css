@@ -1,0 +1,112 @@
+.settings-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  background: #f0f0f0;
+  transform: translateX(-5px);
+}
+
+.settings-card h1 {
+  color: #333;
+  margin: 20px 0 30px;
+  text-align: center;
+}
+
+.settings-section {
+  margin-bottom: 30px;
+}
+
+.settings-section h2 {
+  color: #555;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.language-options {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.lang-btn {
+  flex: 1;
+  min-width: 120px;
+  padding: 15px;
+  border: 2px solid #e0e0e0;
+  background: #f8f8f8;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #333;
+}
+
+.lang-btn:hover {
+  border-color: #667eea;
+  background: #f0f4ff;
+}
+
+.lang-btn.active {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.settings-info {
+  background: #f0f4ff;
+  border-left: 4px solid #667eea;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+.settings-info p {
+  margin: 8px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.settings-info strong {
+  color: #667eea;
+}
+
+@media (max-width: 600px) {
+  .settings-card {
+    padding: 25px;
+  }
+
+  .lang-btn {
+    min-width: 100px;
+    padding: 12px;
+  }
+}

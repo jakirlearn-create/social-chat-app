@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { authService } from '../services/authService';
+import authService from '../services/authService';
 import toast from 'react-hot-toast';
 import './ForgotPasswordPage.css';
 
@@ -93,18 +93,18 @@ function ForgotPasswordPage() {
           </form>
         ) : (
           <div className="verification-section">
-            <div className="success-icon">✓</div>
+            <div className="success-icon">âœ“</div>
             <h2>Contact Support</h2>
             <p>Please contact our customer service to reset your password:</p>
             
             <div className="support-info">
               <div className="support-item">
-                <h3>📞 Customer Service</h3>
+                <h3>ðŸ“ž Customer Service</h3>
                 <a href={`tel:${supportInfo?.phone}`}>{supportInfo?.phone}</a>
               </div>
               
               <div className="support-item">
-                <h3>💬 WhatsApp</h3>
+                <h3>ðŸ’¬ WhatsApp</h3>
                 <a href={`https://wa.me/${supportInfo?.whatsapp.replace(/[^\d]/g, '')}`} target="_blank" rel="noopener noreferrer">
                   {supportInfo?.whatsapp}
                 </a>
@@ -122,7 +122,7 @@ function ForgotPasswordPage() {
 
         {/* Back to Login */}
         <div className="back-to-login">
-          <Link to="/login">← Back to Login</Link>
+          <Link to="/login">â† Back to Login</Link>
         </div>
       </div>
     </div>

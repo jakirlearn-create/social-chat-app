@@ -1,0 +1,29 @@
+﻿{
+    "local":  {
+                  "admin":  "http://localhost:3001",
+                  "frontend":  "http://localhost:3000",
+                  "api":  "http://localhost:8000/api"
+              },
+    "ngrok":  {
+                  "active":  false,
+                  "url":  null,
+                  "api":  null
+              },
+    "network":  {
+                    "admin":  "http://10.65.25.253:3001",
+                    "ip":  "10.65.25.253",
+                    "frontend":  "http://10.65.25.253:3000",
+                    "api":  "http://10.65.25.253:8000/api"
+                },
+    "generated":  "2025-11-27T01:23:33.1871270+08:00",
+    "vercel":  {
+                   "frontend":  "",
+                   "admin":  "\\scripts\\generate-testing-urls.ps1"
+               },
+    "status":  {
+                   "admin":  true,
+                   "backend":  true,
+                   "ngrok":  false,
+                   "frontend":  true
+               }
+}

@@ -6,6 +6,20 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
+// CORS Headers Middleware for all auth routes
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
+
 // Country dial codes mapping
 const countryDialCodes = {
   'BD': '+880',  // Bangladesh
@@ -50,29 +64,60 @@ const generateCountryBasedId = async (countryCode) => {
 // SIGNUP - Manual, Google, Facebook
 router.post('/signup', async (req, res) => {
   try {
+    console.log('📝 Signup request received:', { ...req.body, password: '***' });
+    
     const { name, email, phone, password, dob, gender, country, countryCode } = req.body;
 
     // Validate input
     if (!name || !password) {
-      return res.status(400).json({ message: 'Name and password are required' });
+      console.log('❌ Validation failed: Name or password missing');
+      return res.status(400).json({ 
+        message: 'নাম এবং পাসওয়ার্ড দিতে হবে',
+        error: 'Name and password are required' 
+      });
     }
 
     if (!email && !phone) {
-      return res.status(400).json({ message: 'Email or phone is required' });
+      console.log('❌ Validation failed: Email and phone both missing');
+      return res.status(400).json({ 
+        message: 'ইমেইল অথবা ফোন নম্বর দিতে হবে',
+        error: 'Email or phone is required' 
+      });
     }
 
     if (!country || !countryCode) {
-      return res.status(400).json({ message: 'Country selection is required' });
+      console.log('❌ Validation failed: Country not selected');
+      return res.status(400).json({ 
+        message: 'দেশ সিলেক্ট করুন',
+        error: 'Country selection is required' 
+      });
     }
 
-    // Check if user exists
-    let existingUser = null;
-    if (email) existingUser = await User.findOne({ email });
-    if (!existingUser && phone) existingUser = await User.findOne({ phone });
-
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    // Check if user exists with email
+    if (email) {
+      const existingEmailUser = await User.findOne({ email });
+      if (existingEmailUser) {
+        console.log('❌ User exists with email:', email);
+        return res.status(400).json({ 
+          message: `এই ইমেইল দিয়ে আগে থেকেই একাউন্ট খোলা আছে: ${email}`,
+          error: 'Account already exists with this email'
+        });
+      }
     }
+
+    // Check if user exists with phone
+    if (phone) {
+      const existingPhoneUser = await User.findOne({ phone });
+      if (existingPhoneUser) {
+        console.log('❌ User exists with phone:', phone);
+        return res.status(400).json({ 
+          message: `এই ফোন নম্বর দিয়ে আগে থেকেই একাউন্ট খোলা আছে: ${phone}`,
+          error: 'Account already exists with this phone number'
+        });
+      }
+    }
+
+    console.log('✅ Validation passed, creating new user...');
 
     // Generate country-based unique ID
     const idNumber = await generateCountryBasedId(countryCode);
@@ -134,30 +179,58 @@ router.post('/signup', async (req, res) => {
 // LOGIN
 router.post('/login', async (req, res) => {
   try {
+    console.log('🔐 Login request received:', { email: req.body.email, phone: req.body.phone });
+    
     const { email, phone, password } = req.body;
 
     if (!password) {
-      return res.status(400).json({ message: 'Password is required' });
+      console.log('❌ Login failed: Password missing');
+      return res.status(400).json({ 
+        message: 'পাসওয়ার্ড দিতে হবে',
+        error: 'Password is required' 
+      });
     }
 
     if (!email && !phone) {
-      return res.status(400).json({ message: 'Email or phone is required' });
+      console.log('❌ Login failed: Email and phone both missing');
+      return res.status(400).json({ 
+        message: 'ইমেইল অথবা ফোন নম্বর দিতে হবে',
+        error: 'Email or phone is required' 
+      });
     }
 
     // Find user
     let user = null;
-    if (email) user = await User.findOne({ email });
-    if (!user && phone) user = await User.findOne({ phone });
+    let searchField = '';
+    
+    if (email) {
+      user = await User.findOne({ email });
+      searchField = 'email: ' + email;
+    }
+    if (!user && phone) {
+      user = await User.findOne({ phone });
+      searchField = 'phone: ' + phone;
+    }
 
     if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+      console.log('❌ Login failed: User not found with', searchField);
+      return res.status(400).json({ 
+        message: 'এই ইমেইল বা ফোন নম্বর দিয়ে কোনো একাউন্ট নেই',
+        error: 'No account found with this email or phone' 
+      });
     }
 
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: 'Invalid password' });
+      console.log('❌ Login failed: Invalid password for user:', user.idNumber);
+      return res.status(400).json({ 
+        message: 'ভুল পাসওয়ার্ড দিয়েছেন',
+        error: 'Incorrect password' 
+      });
     }
+
+    console.log('✅ Login successful for user:', user.idNumber);
 
     // Update last login
     user.lastLogin = new Date();

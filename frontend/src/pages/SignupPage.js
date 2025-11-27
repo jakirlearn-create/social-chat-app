@@ -38,30 +38,49 @@ function SignupPage() {
   };
 
   const validateForm = () => {
-    if (!formData.name.trim()) {
-      toast.error('Name is required');
+    console.log('🔍 Validating form data:', formData);
+    
+    if (!formData.name || !formData.name.trim()) {
+      toast.error('নাম লিখুন / Name is required');
+      console.log('❌ Name validation failed');
       return false;
     }
-    if (!formData.email.trim() && !formData.phone.trim()) {
-      toast.error('Email or phone is required');
+    
+    // Check if at least one of email or phone is provided
+    const hasEmail = formData.email && formData.email.trim();
+    const hasPhone = formData.phone && formData.phone.trim();
+    
+    if (!hasEmail && !hasPhone) {
+      toast.error('ইমেইল অথবা ফোন নম্বর দিন / Email or phone is required');
+      console.log('❌ Email/Phone validation failed');
       return false;
     }
+    
     if (!formData.password) {
-      toast.error('Password is required');
+      toast.error('পাসওয়ার্ড দিন / Password is required');
+      console.log('❌ Password validation failed');
       return false;
     }
+    
     if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error('পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে / Password must be at least 6 characters');
+      console.log('❌ Password length validation failed');
       return false;
     }
+    
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error('পাসওয়ার্ড মিলছে না / Passwords do not match');
+      console.log('❌ Password match validation failed');
       return false;
     }
+    
     if (!formData.country) {
-      toast.error('Please select a country');
+      toast.error('দেশ সিলেক্ট করুন / Please select a country');
+      console.log('❌ Country validation failed');
       return false;
     }
+    
+    console.log('✅ All validations passed!');
     return true;
   };
 

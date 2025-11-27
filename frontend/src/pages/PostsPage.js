@@ -289,16 +289,15 @@ const PostsPage = () => {
                     🚩 Report
                   </button>
                   <button onClick={() => handleMenuAction(post.id, 'hide')}>
-                    👁️ Hide
-                  </button>
+                    👁️ {t('common.back')}</button>
                   <button onClick={() => handleMenuAction(post.id, 'block')}>
-                    🚫 Block User
+                    🚫 {t('posts.block')}
                   </button>
                   <button onClick={() => handleMenuAction(post.id, 'copy')}>
-                    🔗 Copy Link
+                    🔗 {t('posts.copyLink')}
                   </button>
                   <button onClick={() => handleMenuAction(post.id, 'mute')}>
-                    🔕 Mute Notifications
+                    🔕 {t('posts.mute')}
                   </button>
                 </div>
               )}
@@ -365,20 +364,20 @@ const PostsPage = () => {
         <div className="comments-modal">
           <div className="comments-container">
             <div className="comments-header">
-              <h2>Comments</h2>
+              <h2>{t('posts.comments')}</h2>
               <button onClick={() => setShowComments(false)}>✕</button>
             </div>
             <div className="comments-list">
-              <p className="no-comments">No comments yet. Be the first!</p>
+              <p className="no-comments">{t('posts.noComments')}</p>
             </div>
             <div className="comment-input-container">
               <input
                 type="text"
-                placeholder="Write a comment..."
+                placeholder={t('posts.writeComment')}
                 value={commentText}
                 onChange={(e) => setCommentText(e.target.value)}
               />
-              <button className="send-comment-btn">Send</button>
+              <button className="send-comment-btn">{t('common.send')}</button>
             </div>
           </div>
         </div>

@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema({
   },
   nextLevelCoins: {
     type: Number,
-    default: 1000
+    default: 1000000
   },
   currentLevelProgress: {
     type: Number,
@@ -101,6 +101,10 @@ const userSchema = new mongoose.Schema({
       'view_logs',
       'manage_settings'
     ]
+  }],
+  searchableKeywords: [{
+    type: String,
+    index: true
   }],
   lastLogin: Date,
   createdBy: {

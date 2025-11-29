@@ -11,8 +11,7 @@ const messageRoutes = require('./routes/messages');
 const conversationRoutes = require('./routes/conversations');
 const walletRoutes = require('./routes/wallet');
 const adminRoutes = require('./routes/admin');
-// const uploadsRoutes = require('./routes/uploads');
-// const profileRoutes = require('./routes/profile');
+const profileRoutes = require('./routes/profile');
 
 const app = express();
 
@@ -60,8 +59,7 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/admin', adminRoutes);
-// app.use('/api/uploads', uploadsRoutes);
-// app.use('/api/profile', profileRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {

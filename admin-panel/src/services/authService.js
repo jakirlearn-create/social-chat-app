@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://backend-mejk3gl5z-fwps-projects-8ef3c28d.vercel.app/api';
+// Force production API URL - no fallback to old Vercel URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://fwp-backend-api.onrender.com/api';
+
+// Debug logging for mobile troubleshooting
+console.log('🔧 Admin Panel API Configuration:');
+console.log('   REACT_APP_API_URL from env:', process.env.REACT_APP_API_URL);
+console.log('   Final API_BASE_URL:', API_BASE_URL);
+console.log('   Build time:', new Date().toISOString());
 
 class AuthService {
   // Super Admin Login

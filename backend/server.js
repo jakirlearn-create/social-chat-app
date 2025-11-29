@@ -1,4 +1,4 @@
-﻿require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -11,6 +11,8 @@ const messageRoutes = require('./routes/messages');
 const conversationRoutes = require('./routes/conversations');
 const walletRoutes = require('./routes/wallet');
 const adminRoutes = require('./routes/admin');
+// const uploadsRoutes = require('./routes/uploads');
+// const profileRoutes = require('./routes/profile');
 
 const app = express();
 
@@ -47,7 +49,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => console.log('✓ MongoDB Connected'))
+.then(() => console.log('? MongoDB Connected'))
 .catch(err => console.error('MongoDB Error:', err.message));
 
 // Routes
@@ -58,6 +60,8 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/conversations', conversationRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/admin', adminRoutes);
+// app.use('/api/uploads', uploadsRoutes);
+// app.use('/api/profile', profileRoutes);
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -75,11 +79,12 @@ const PORT = process.env.PORT || 5000;
 // Only start server if not in Vercel serverless environment
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   app.listen(PORT, () => {
-    console.log(`✓ Server running on port ${PORT}`);
-    console.log(`✓ Environment: ${process.env.NODE_ENV}`);
-    console.log(`✓ Frontend URL: ${process.env.FRONTEND_URL}`);
+    console.log(`? Server running on port ${PORT}`);
+    console.log(`? Environment: ${process.env.NODE_ENV}`);
+    console.log(`? Frontend URL: ${process.env.FRONTEND_URL}`);
   });
 }
 
 // Export for Vercel serverless
 module.exports = app;
+

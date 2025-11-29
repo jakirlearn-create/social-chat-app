@@ -59,7 +59,7 @@ class WebSocketService {
 }
 
 let defaultInstance = null;
-export function getWebSocket(url = (process.env.REACT_APP_WS_URL || 'ws://localhost:8000/ws')) {
+export function getWebSocket(url = (import.meta.env.VITE_WS_URL || 'ws://localhost:8000/ws')) {
   if (!defaultInstance) defaultInstance = new WebSocketService(url);
   return defaultInstance;
 }

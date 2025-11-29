@@ -1,0 +1,169 @@
+﻿import React, { useState, useEffect, useRef } from 'react';
+import MessengerTaskbar from '../components/MessengerTaskbar';
+import { useNavigate } from 'react-router-dom';
+import './MessengerPage.css';
+import { t } from '../i18n';
+import MessengerSearchBar from '../components/MessengerSearchBar';
+import { loadChatList, getUserInfo } from '../services/chatService';
+import { formatMessageTime } from '../utils/chatUtils';
+
+export default function MessengerPage() {
+  const navigate = useNavigate();
+  const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showGamesModal, setShowGamesModal] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const listRef = useRef(null);
+  const currentUserId = localStorage.getItem('userId');
+
+  useEffect(() => {
+    if (!currentUserId) {
+      console.error('User not logged in');
+      navigate('/login');
+      return;
+    }
+
+    setLoading(true);
+
+    // Load chat list from Firebase with real-time updates
+    const unsubscribe = loadChatList(currentUserId, async (chatListData) => {
+      // Enhance chat list with formatted time
+      const enhancedChats = chatListData.map(chat => ({
+        ...chat,
+        time: formatMessageTime(chat.lastTime),
+        name: chat.userName || 'Unknown User',
+        avatar: chat.userPhoto || `https://ui-avatars.com/api/?name=${chat.userName || 'User'}&background=667eea&color=fff`,
+        id: chat.userId,
+        unread: chat.unreadCount || 0,
+      }));
+
+      setChats(enhancedChats);
+      setLoading(false);
+    });
+
+    // Cleanup listener on unmount
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [currentUserId, navigate]);
+
+  const handleChatClick = (userId) => {
+    navigate(`/chat/${userId}`);
+  };
+
+  const handleSearchToggle = (isSearching) => {
+    setShowSearchResults(isSearching);
+  };
+
+  return (
+    <div className="messenger-page">      <MessengerTaskbar />
+      <header className="messenger-header">
+        <div className="header-left">
+          <h2>{t('messenger.title') || 'Messenger'}</h2>
+        </div>
+        <div className="header-center">
+          <MessengerSearchBar 
+            placeholder={t('search.placeholder') || 'ðŸ” Search to start chat...'}
+            onUserSelect={(user) => {
+              // Open chat with selected user
+              navigate(`/chat/${user.userId}`);
+            }}
+          />
+        </div>
+        <div className="header-right">
+          <button className="games-icon-btn" onClick={() => setShowGamesModal(true)} title="Play Games">
+            ðŸŽ®
+          </button>
+          <button className="new-chat-btn" onClick={() => alert('New chat - not implemented')}>New</button>
+        </div>
+      </header>
+
+      <div className="chats-list" onScroll={handleScroll} ref={listRef}>
+        {filtered.map((c) => (
+          <div key={c.id} className="chat-row" onClick={() => navigate(`/chat/${c.id}`)}>
+            <div className="avatar-wrap">
+              <img src={c.avatar} alt="avatar" className={`avatar ${c.online ? 'online' : ''}`} />
+            </div>
+            <div className="chat-meta">
+              <div className="meta-top">
+                <div className="chat-name">{c.name}</div>
+                <div className="chat-time">{c.time}</div>
+              </div>
+              <div className="meta-bottom">
+                <div className="chat-preview">{c.lastMessage}</div>
+                {c.unread > 0 && <div className="unread-badge">{c.unread}</div>}
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="list-end">End of list</div>
+      </div>
+
+      {/* Games Modal */}
+      {showGamesModal && (
+        <div className="games-modal-overlay" onClick={() => setShowGamesModal(false)}>
+          <div className="games-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="games-modal-header">
+              <h3>?? Play Games</h3>
+              <button className="close-btn" onClick={() => setShowGamesModal(false)}>?</button>
+            </div>
+            <div className="games-grid">
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Ludo Quick</div>
+                <div className="game-fee">Entry: 1000 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Carrom Lite</div>
+                <div className="game-fee">Entry: 1500 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Chicken Jump</div>
+                <div className="game-fee">Entry: 500 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Crash Game</div>
+                <div className="game-fee">Entry: 1500 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Spin Wheel</div>
+                <div className="game-fee">Entry: 1000 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Number Roll</div>
+                <div className="game-fee">Entry: 800 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Knife Hit</div>
+                <div className="game-fee">Entry: 1200 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Fruit Slice</div>
+                <div className="game-fee">Entry: 1000 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">??</div>
+                <div className="game-name">Memory Match</div>
+                <div className="game-fee">Entry: 500 coins</div>
+              </div>
+              <div className="game-card" onClick={() => navigate('/games')}>
+                <div className="game-icon">?</div>
+                <div className="game-name">Tic Tac Toe</div>
+                <div className="game-fee">Entry: 500 coins</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+

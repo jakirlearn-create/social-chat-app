@@ -1,45 +1,45 @@
 {
-  "name": "social-chat-frontend",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "axios": "^1.6.0",
-    "firebase": "^10.7.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-firebase-hooks": "^5.1.1",
-    "react-hot-toast": "^2.4.1",
-    "react-icons": "^4.12.0",
-    "react-router-dom": "^6.16.0",
-    "tailwindcss": "^3.3.6"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "electron": "^39.2.1",
-    "electron-builder": "^26.0.12",
-    "react-app-rewired": "^2.2.1",
-    "react-scripts": "5.0.1"
-  }
+    "name":  "social-chat-frontend",
+    "version":  "1.0.0",
+    "private":  true,
+    "dependencies":  {
+                         "axios":  "^1.6.0",
+                         "firebase":  "^10.7.0",
+                         "react":  "^18.2.0",
+                         "react-dom":  "^18.2.0",
+                         "react-firebase-hooks":  "^5.1.1",
+                         "react-hot-toast":  "^2.4.1",
+                         "react-icons":  "^4.12.0",
+                         "react-router-dom":  "^6.16.0",
+                         "tailwindcss":  "^3.3.6"
+                     },
+    "scripts":  {
+                    "start":  "react-scripts start",
+                    "build":  "vite build",
+                    "test":  "react-scripts test",
+                    "eject":  "react-scripts eject"
+                },
+    "eslintConfig":  {
+                         "extends":  [
+                                         "react-app"
+                                     ]
+                     },
+    "browserslist":  {
+                         "production":  [
+                                            "\u003e0.2%",
+                                            "not dead",
+                                            "not op_mini all"
+                                        ],
+                         "development":  [
+                                             "last 1 chrome version",
+                                             "last 1 firefox version",
+                                             "last 1 safari version"
+                                         ]
+                     },
+    "devDependencies":  {
+                            "electron":  "^39.2.1",
+                            "electron-builder":  "^26.0.12",
+                            "react-app-rewired":  "^2.2.1",
+                            "react-scripts":  "5.0.1"
+                        }
 }

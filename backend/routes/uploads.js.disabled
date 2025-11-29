@@ -1,0 +1,181 @@
+const express = require('express');
+const router = express.Router();
+const admin = require('firebase-admin');
+const { v4: uuidv4 } = require('uuid');
+const auth = require('../middleware/auth');
+
+// Initialize Firebase Storage bucket
+const bucket = admin.storage().bucket();
+
+// POST /api/uploads/request - Request signed upload URL
+router.post('/request', auth, async (req, res) => {
+  try {
+    const { fileName, contentType, fileSize } = req.body;
+
+    // Validate input
+    if (!fileName || !contentType) {
+      return res.status(400).json({ message: 'fileName and contentType are required' });
+    }
+
+    // Validate file size (max 100MB)
+    const maxSize = 100 * 1024 * 1024; // 100MB
+    if (fileSize && fileSize > maxSize) {
+      return res.status(400).json({ message: `File size must be less than ${maxSize / 1024 / 1024}MB` });
+    }
+
+    // Validate MIME type
+    const allowedTypes = [
+      'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/quicktime', 'video/x-msvideo',
+      'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4'
+    ];
+
+    if (!allowedTypes.includes(contentType)) {
+      return res.status(400).json({ message: 'Invalid file type' });
+    }
+
+    // Generate unique file name
+    const fileExtension = fileName.split('.').pop();
+    const uniqueFileName = `${req.userId}/${uuidv4()}.${fileExtension}`;
+    const filePath = `uploads/${uniqueFileName}`;
+
+    // Create file reference
+    const file = bucket.file(filePath);
+
+    // Generate signed URL for upload (valid for 15 minutes)
+    const [signedUrl] = await file.getSignedUrl({
+      version: 'v4',
+      action: 'write',
+      expires: Date.now() + 15 * 60 * 1000, // 15 minutes
+      contentType: contentType
+    });
+
+    // Generate public URL (for after upload)
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+
+    res.json({
+      uploadUrl: signedUrl,
+      publicUrl,
+      filePath,
+      fileName: uniqueFileName
+    });
+
+  } catch (error) {
+    console.error('Error generating signed URL:', error);
+    res.status(500).json({ message: 'Error generating upload URL', error: error.message });
+  }
+});
+
+// POST /api/uploads/complete - Mark upload as complete and generate thumbnail
+router.post('/complete', auth, async (req, res) => {
+  try {
+    const { filePath, contentType } = req.body;
+
+    if (!filePath) {
+      return res.status(400).json({ message: 'filePath is required' });
+    }
+
+    const file = bucket.file(filePath);
+
+    // Check if file exists
+    const [exists] = await file.exists();
+    if (!exists) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    // Get file metadata
+    const [metadata] = await file.getMetadata();
+    const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
+
+    let response = {
+      url: publicUrl,
+      size: parseInt(metadata.size),
+      mime: metadata.contentType,
+      uploaded: true
+    };
+
+    // For images, we can generate thumbnail URL (Cloud Functions will handle actual generation)
+    if (contentType.startsWith('image/')) {
+      const thumbPath = filePath.replace(/\.[^.]+$/, '_thumb.jpg');
+      response.thumb = `https://storage.googleapis.com/${bucket.name}/${thumbPath}`;
+      
+      // TODO: Trigger Cloud Function for thumbnail generation
+      // You can use Pub/Sub or direct HTTP call to Cloud Function
+    }
+
+    // For videos, generate thumbnail path
+    if (contentType.startsWith('video/')) {
+      const thumbPath = filePath.replace(/\.[^.]+$/, '_thumb.jpg');
+      response.thumb = `https://storage.googleapis.com/${bucket.name}/${thumbPath}`;
+      
+      // TODO: Trigger Cloud Function for video thumbnail + HLS transcoding
+    }
+
+    res.json(response);
+
+  } catch (error) {
+    console.error('Error completing upload:', error);
+    res.status(500).json({ message: 'Error completing upload', error: error.message });
+  }
+});
+
+// GET /api/uploads/signed-url/:filePath - Get signed URL for viewing private files
+router.get('/signed-url', auth, async (req, res) => {
+  try {
+    const { filePath } = req.query;
+
+    if (!filePath) {
+      return res.status(400).json({ message: 'filePath is required' });
+    }
+
+    const file = bucket.file(filePath);
+
+    // Generate signed URL for viewing (valid for 1 hour)
+    const [signedUrl] = await file.getSignedUrl({
+      version: 'v4',
+      action: 'read',
+      expires: Date.now() + 60 * 60 * 1000 // 1 hour
+    });
+
+    res.json({ url: signedUrl });
+
+  } catch (error) {
+    console.error('Error generating signed URL:', error);
+    res.status(500).json({ message: 'Error generating signed URL', error: error.message });
+  }
+});
+
+// DELETE /api/uploads/:filePath - Delete uploaded file
+router.delete('/', auth, async (req, res) => {
+  try {
+    const { filePath } = req.query;
+
+    if (!filePath) {
+      return res.status(400).json({ message: 'filePath is required' });
+    }
+
+    // Check if file belongs to user
+    if (!filePath.startsWith(`uploads/${req.userId}/`)) {
+      return res.status(403).json({ message: 'You can only delete your own files' });
+    }
+
+    const file = bucket.file(filePath);
+    await file.delete();
+
+    // Also delete thumbnail if exists
+    const thumbPath = filePath.replace(/\.[^.]+$/, '_thumb.jpg');
+    const thumbFile = bucket.file(thumbPath);
+    const [thumbExists] = await thumbFile.exists();
+    if (thumbExists) {
+      await thumbFile.delete();
+    }
+
+    res.json({ message: 'File deleted successfully' });
+
+  } catch (error) {
+    console.error('Error deleting file:', error);
+    res.status(500).json({ message: 'Error deleting file', error: error.message });
+  }
+});
+
+module.exports = router;

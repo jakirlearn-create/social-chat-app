@@ -1,0 +1,134 @@
+.post-actions {
+  padding: 4px 16px 8px;
+}
+
+.actions-row {
+  display: flex;
+  gap: 4px;
+}
+
+.action-btn-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #65676b;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: #f0f2f5;
+}
+
+.action-btn.active {
+  color: #667eea;
+}
+
+.action-btn.active .action-icon {
+  animation: reaction-pop 0.3s ease-out;
+}
+
+@keyframes reaction-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.action-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.action-label {
+  font-size: 14px;
+}
+
+/* Reaction Picker */
+.reaction-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+  background: white;
+  padding: 8px;
+  border-radius: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  margin-bottom: 8px;
+  z-index: 10;
+  animation: picker-slide-up 0.2s ease-out;
+}
+
+@keyframes picker-slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.reaction-item {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  font-size: 28px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reaction-item:hover {
+  transform: scale(1.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .post-actions {
+    padding: 4px 12px 8px;
+  }
+
+  .action-btn {
+    padding: 6px 8px;
+    font-size: 13px;
+  }
+
+  .action-icon {
+    font-size: 16px;
+  }
+
+  .action-label {
+    font-size: 13px;
+  }
+
+  .reaction-picker {
+    padding: 6px;
+  }
+
+  .reaction-item {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+}

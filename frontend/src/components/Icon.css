@@ -1,0 +1,45 @@
+.icon {
+  display: inline-block;
+  vertical-align: middle;
+  object-fit: contain;
+  user-select: none;
+}
+
+.icon-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.icon.clickable:hover {
+  transform: scale(1.1);
+  opacity: 0.8;
+}
+
+.icon.clickable:active {
+  transform: scale(0.95);
+}
+
+/* Specific icon styles */
+.icon-loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.icon-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+}

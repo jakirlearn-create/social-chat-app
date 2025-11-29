@@ -142,14 +142,14 @@ mongodb+srv://onetimemalaysiatoor_db_user:Jakir@4219@fwp-cluster.zmsoq60.mongodb
 ## 📊 Current Progress:
 
 ```
-[████████░░] 80% Complete
+[█████████░] 90% Complete
 
 ✅ Firebase Setup
 ✅ MongoDB Setup
 ✅ Backend Configuration
-⏳ Backend Deployment (waiting)
-⏳ LiveKit Setup (waiting)
-⏳ Frontend Build & Deploy
+✅ Backend Deployment - LIVE at https://fwp-backend-api.onrender.com
+⏳ LiveKit Setup (optional - can skip for now)
+⏳ Frontend Build & Deploy (in progress)
 ⏳ Final Integration
 ```
 

@@ -1,5 +1,5 @@
 ﻿import safeLocalStorage from "../utils/safeStorage";
-﻿import API_BASE_URL from '../config/api';
+import API_BASE_URL from '../config/api';
 
 class AuthService {
   async signup(data) {
@@ -116,6 +116,7 @@ class AuthService {
   logout() {
     safeLocalStorage.removeItem('token');
     safeLocalStorage.removeItem('user');
+    safeLocalStorage.removeItem('userId'); // Remove userId for messenger
   }
 
   getToken() {
@@ -130,3 +131,4 @@ class AuthService {
 
 const authService = new AuthService();
 export default authService;
+

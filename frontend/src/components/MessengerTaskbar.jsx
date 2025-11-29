@@ -1,0 +1,138 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './MessengerTaskbar.css';
+import safeLocalStorage from '../utils/safeStorage';
+import authService from '../services/authService';
+
+function MessengerTaskbar() {
+  const navigate = useNavigate();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const current = await authService.getCurrentUser();
+        if (current) {
+          setUser(current);
+        } else {
+          // Fallback to localStorage or default user
+          const userStr = safeLocalStorage.getItem('user');
+          if (userStr) {
+            setUser(JSON.parse(userStr));
+          } else {
+            setUser({
+              name: 'Demo User',
+              id: 100001,
+              idNumber: 'FWP' + Math.random().toString(36).slice(2, 10).toUpperCase(),
+              profilePicture: '',
+            });
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load user:', err);
+        setUser({
+          name: 'Demo User',
+          id: 100001,
+          idNumber: 'FWP' + Math.random().toString(36).slice(2, 10).toUpperCase(),
+          profilePicture: '',
+        });
+      }
+    };
+    loadUser();
+
+    // Listen for profile updates
+    const handleProfileUpdate = (event) => {
+      if (event.detail && event.detail.user) {
+        setUser(event.detail.user);
+      }
+    };
+
+    window.addEventListener('profileUpdated', handleProfileUpdate);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
+    };
+  }, []);
+
+  const menuItems = [
+    { label: 'Settings', path: '/settings', icon: '' },
+    { label: 'Marketplace', path: '/marketplace', icon: '' },
+    { label: 'Message Requests', path: '/message-requests', icon: '' },
+    { label: 'Archive', path: '/archive', icon: '' },
+    { label: 'Friend Requests', path: '/friend-requests', icon: '' },
+    { label: 'Communities', path: '/communities', icon: '' },
+    { label: 'Create Community', path: '/create-community', icon: '' },
+    { label: 'Facebook Groups', path: '/facebook-groups', icon: '' },
+  ];
+
+  const handleBack = () => navigate(-1);
+  const handleProfileClick = () => navigate('/profile');
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  
+  if (!user) return null; // Loading state
+  
+  return (
+    <>
+      <div className="messenger-taskbar">
+        <button className="messenger-back-btn" onClick={handleBack} title="Back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
+
+        <button className="messenger-menu-btn" onClick={toggleDrawer} title="Menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        </button>
+
+        <div className="messenger-user-info" onClick={handleProfileClick}>
+          <div className="messenger-profile-pic">
+            {(user.profilePicture || user.profilePic) ? (
+              <img src={user.profilePicture || user.profilePic} alt={user.name} />
+            ) : (
+              <div className="messenger-profile-placeholder">
+                {user.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+            )}
+          </div>
+
+          <div className="messenger-user-details">
+            <div className="messenger-username">{user.name}</div>
+            <div className="messenger-userid">ID: {user.idNumber || user.id}</div>
+          </div>
+        </div>
+      </div>
+
+      {isDrawerOpen && (
+        <>
+          <div className="messenger-drawer-overlay" onClick={toggleDrawer}></div>
+          <div className="messenger-drawer">
+            <div className="messenger-drawer-header">
+              <h3>Menu</h3>
+              <button onClick={toggleDrawer} className="messenger-drawer-close"></button>
+            </div>
+            <div className="messenger-drawer-menu">
+              {menuItems.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="messenger-drawer-item"
+                  onClick={() => {
+                    navigate(item.path);
+                    setIsDrawerOpen(false);
+                  }}
+                >
+                  <span className="messenger-drawer-icon">{item.icon}</span>
+                  <span className="messenger-drawer-label">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+export default MessengerTaskbar;

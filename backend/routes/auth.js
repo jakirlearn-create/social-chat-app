@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { generateSearchKeywords } = require('../utils/searchKeywordGenerator');
 
 const router = express.Router();
 
@@ -125,6 +126,14 @@ router.post('/signup', async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate search keywords for fast search
+    const searchableKeywords = generateSearchKeywords({
+      name,
+      idNumber,
+      email,
+      phone
+    });
+
     // Create new user
     const newUser = new User({
       idNumber,
@@ -135,7 +144,8 @@ router.post('/signup', async (req, res) => {
       dob,
       gender,
       country,
-      countryCode
+      countryCode,
+      searchableKeywords
     });
 
     await newUser.save();

@@ -16,4 +16,6 @@ const auth = (req, res, next) => {
   }
 };
 
+// Export both names for compatibility
 module.exports = auth;
+module.exports.verifyToken = auth;

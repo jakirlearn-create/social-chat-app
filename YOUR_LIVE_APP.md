@@ -2,14 +2,13 @@
 ## Access from ANY Phone, Anywhere!
 
 **Deployed:** November 27, 2025
-**Updated:** November 27, 2025 - All Features Fixed ✅
 
 ---
 
-## 🌐 YOUR LIVE URLs (LATEST)
+## 🌐 YOUR LIVE URLs
 
 ### 📱 Frontend App (Main Application)
-**URL:** https://frontend-g6que6tqi-fwps-projects-8ef3c28d.vercel.app
+**URL:** https://frontend-r8eivyyw0-fwps-projects-8ef3c28d.vercel.app
 
 **Use this to:**
 - Register new users
@@ -24,7 +23,7 @@
 ---
 
 ### 🔐 Admin Panel
-**URL:** https://admin-panel-m7psh80ii-fwps-projects-8ef3c28d.vercel.app
+**URL:** https://admin-panel-3fz6qxzrx-fwps-projects-8ef3c28d.vercel.app
 
 **Admin Login:**
 - Email: `admin@admin.com`
@@ -39,7 +38,7 @@
 ---
 
 ### ⚙️ Backend API
-**URL:** https://backend-87wq1r63a-fwps-projects-8ef3c28d.vercel.app
+**URL:** https://backend-ea73lopno-fwps-projects-8ef3c28d.vercel.app
 
 **API Endpoints:**
 - Health Check: `/api/health`

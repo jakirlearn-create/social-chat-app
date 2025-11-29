@@ -1,67 +1,32 @@
-const functions = require("firebase-functions");
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const helmet = require("helmet");
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * const {onCall} = require("firebase-functions/v2/https");
+ * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
 
-const app = express();
+const {setGlobalOptions} = require("firebase-functions");
+const {onRequest} = require("firebase-functions/https");
+const logger = require("firebase-functions/logger");
 
-// Middleware
-app.use(helmet());
-app.use(cors({ origin: "*", credentials: true }));
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+// For cost control, you can set the maximum number of containers that can be
+// running at the same time. This helps mitigate the impact of unexpected
+// traffic spikes by instead downgrading performance. This limit is a
+// per-function limit. You can override the limit for each function using the
+// `maxInstances` option in the function's options, e.g.
+// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
+// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
+// functions should each use functions.runWith({ maxInstances: 10 }) instead.
+// In the v1 API, each function can only serve one request per container, so
+// this will be the maximum concurrent request count.
+setGlobalOptions({ maxInstances: 10 });
 
-// MongoDB Connection
-const MONGODB_URI = "mongodb+srv://jakirlearn:Jakir%404219@fwp.kr8blow.mongodb.net/social_chat_app?retryWrites=true&w=majority&appName=FWP";
-process.env.JWT_SECRET = "fwp_audiochat_jwt_secret_key_2025_super_secure";
+// Create and deploy your first functions
+// https://firebase.google.com/docs/functions/get-started
 
-let isConnected = false;
-async function connectDB() {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-    isConnected = true;
-    console.log("✓ MongoDB Connected");
-  } catch (err) {
-    console.error("MongoDB Error:", err.message);
-  }
-}
-
-// Import routes
-const authRoutes = require("../routes/auth");
-const userRoutes = require("../routes/users");
-const postRoutes = require("../routes/posts");
-const messageRoutes = require("../routes/messages");
-const conversationRoutes = require("../routes/conversations");
-const walletRoutes = require("../routes/wallet");
-const adminRoutes = require("../routes/admin");
-
-// Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/messages", messageRoutes);
-app.use("/api/conversations", conversationRoutes);
-app.use("/api/wallet", walletRoutes);
-app.use("/api/admin", adminRoutes);
-
-// Health check
-app.get("/api/health", (req, res) => {
-  res.json({ message: "Firebase Functions API is running!", timestamp: new Date() });
-});
-
-// Error handling
-app.use((err, req, res, next) => {
-  console.error("Error:", err);
-  res.status(500).json({ message: "Internal server error", error: err.message });
-});
-
-// Export Express app as Firebase Function
-exports.api = functions.https.onRequest(async (req, res) => {
-  await connectDB();
-  return app(req, res);
-});
+// exports.helloWorld = onRequest((request, response) => {
+//   logger.info("Hello logs!", {structuredData: true});
+//   response.send("Hello from Firebase!");
+// });

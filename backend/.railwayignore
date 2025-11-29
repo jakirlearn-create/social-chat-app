@@ -1,0 +1,14 @@
+node_modules
+.env
+.git
+.gitignore
+*.log
+npm-debug.log*
+.DS_Store
+functions
+.firebase
+.firebaserc
+firebase.json
+.vercel
+.dockerignore
+Dockerfile

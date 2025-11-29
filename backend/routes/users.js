@@ -1,114 +1,157 @@
 const express = require('express');
-const User = require('../models/User');
-const auth = require('../middleware/auth');
-
 const router = express.Router();
+const User = require('../models/User');
+const { verifyToken } = require('../middleware/authMiddleware');
 
-// CORS Headers
-router.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  if (req.method === 'OPTIONS') return res.status(200).end();
-  next();
+/**
+ * @route   GET /api/users
+ * @desc    Get all users (for admin/search pages)
+ * @access  Private
+ */
+router.get('/', verifyToken, async (req, res) => {
+  try {
+    const users = await User.find({
+      isActive: true,
+      deletedAt: null
+    })
+    .select('name idNumber profilePicture country bio createdAt')
+    .limit(100)
+    .sort({ createdAt: -1 })
+    .lean();
+    
+    const results = users.map(user => ({
+      userId: user._id,
+      name: user.name,
+      username: user.idNumber,
+      uid: user.idNumber,
+      profilePhoto: user.profilePicture || '',
+      country: user.country || '',
+      bio: user.bio || ''
+    }));
+    
+    res.json({
+      success: true,
+      users: results,
+      count: results.length
+    });
+    
+  } catch (error) {
+    console.error('❌ Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch users',
+      error: error.message
+    });
+  }
 });
 
-// GET USER PROFILE BY ID
-router.get('/:userId', async (req, res) => {
+/**
+ * @route   GET /api/users/search
+ * @desc    Search users by name, idNumber, email (Facebook-style)
+ * @access  Private
+ */
+router.get('/search', verifyToken, async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId)
-      .select('-password')
-      .populate('followers', 'name profilePicture idNumber')
-      .populate('following', 'name profilePicture idNumber')
-      .populate('posts');
+    const { q } = req.query;
+    
+    // Validate query parameter
+    if (!q || q.trim().length < 2) {
+      return res.json({
+        success: true,
+        users: [],
+        message: 'Query too short'
+      });
+    }
+    
+    const searchQuery = q.toLowerCase().trim();
+    
+    // Search in searchableKeywords array
+    const users = await User.find({
+      searchableKeywords: { $in: [searchQuery] },
+      isActive: true,
+      deletedAt: null
+    })
+    .select('name idNumber profilePicture country bio')
+    .limit(20)
+    .sort({ name: 1 })
+    .lean();
+    
+    // Format response
+    const results = users.map(user => ({
+      userId: user._id,
+      name: user.name,
+      username: user.idNumber, // Using idNumber as username
+      uid: user.idNumber,
+      profilePhoto: user.profilePicture || '',
+      country: user.country || '',
+      bio: user.bio || ''
+    }));
+    
+    res.json({
+      success: true,
+      users: results,
+      count: results.length
+    });
+    
+  } catch (error) {
+    console.error('❌ Search error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Search failed',
+      error: error.message
+    });
+  }
+});
 
+/**
+ * @route   GET /api/users/profile/:userId
+ * @desc    Get user profile (read-only for visitors)
+ * @access  Private
+ */
+router.get('/profile/:userId', verifyToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.user.userId;
+    
+    const user = await User.findById(userId)
+      .select('-password -searchableKeywords')
+      .populate('posts', 'content mediaUrl likes comments createdAt')
+      .lean();
+    
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
     }
-
-    res.json({ user });
+    
+    // Check if current user is viewing their own profile
+    const isOwner = currentUserId === userId;
+    
+    // Check if current user follows this user
+    const isFollowing = user.followers.some(
+      follower => follower.toString() === currentUserId
+    );
+    
+    res.json({
+      success: true,
+      user: {
+        ...user,
+        isOwner,
+        isFollowing,
+        followersCount: user.followers.length,
+        followingCount: user.following.length,
+        postsCount: user.posts.length
+      }
+    });
+    
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching user', error: error.message });
-  }
-});
-
-// FOLLOW USER
-router.post('/follow/:userId', auth, async (req, res) => {
-  try {
-    const targetUser = await User.findById(req.params.userId);
-    const currentUser = await User.findById(req.userId);
-
-    if (!targetUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    if (currentUser.following.includes(req.params.userId)) {
-      return res.status(400).json({ message: 'Already following this user' });
-    }
-
-    currentUser.following.push(req.params.userId);
-    targetUser.followers.push(req.userId);
-
-    await currentUser.save();
-    await targetUser.save();
-
-    res.json({ message: 'User followed successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error following user', error: error.message });
-  }
-});
-
-// UNFOLLOW USER
-router.post('/unfollow/:userId', auth, async (req, res) => {
-  try {
-    const targetUser = await User.findById(req.params.userId);
-    const currentUser = await User.findById(req.userId);
-
-    if (!targetUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    currentUser.following = currentUser.following.filter(id => id.toString() !== req.params.userId);
-    targetUser.followers = targetUser.followers.filter(id => id.toString() !== req.userId);
-
-    await currentUser.save();
-    await targetUser.save();
-
-    res.json({ message: 'User unfollowed successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error unfollowing user', error: error.message });
-  }
-});
-
-// GET FOLLOWERS
-router.get('/:userId/followers', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId)
-      .populate('followers', 'name profilePicture idNumber');
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({ followers: user.followers });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching followers', error: error.message });
-  }
-});
-
-// GET FOLLOWING
-router.get('/:userId/following', async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId)
-      .populate('following', 'name profilePicture idNumber');
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json({ following: user.following });
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching following', error: error.message });
+    console.error('❌ Profile fetch error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch profile',
+      error: error.message
+    });
   }
 });
 

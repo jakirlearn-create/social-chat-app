@@ -22,12 +22,14 @@ echo -e "${YELLOW}📂 Working Directory: $SCRIPT_DIR${NC}"
 echo ""
 
 # Function to check if a port is in use
+# Returns 0 (success) if port is in use, 1 (failure) if port is free
+# This follows bash convention where 0 = true/success in conditional statements
 check_port() {
     local port=$1
     if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
-        return 0  # Port is in use
+        return 0  # Port is in use (true/success for "if check_port")
     else
-        return 1  # Port is free
+        return 1  # Port is free (false/failure for "if check_port")
     fi
 }
 
@@ -57,6 +59,12 @@ if [ ! -d "backend" ] || [ ! -d "frontend" ] || [ ! -d "admin-panel" ]; then
     echo -e "${RED}✗ Error: Required directories not found!${NC}"
     echo "   Please run this script from the project root directory."
     exit 1
+fi
+
+# Create logs directory if it doesn't exist
+if [ ! -d "logs" ]; then
+    mkdir -p logs
+    echo -e "${GREEN}✓ Created logs directory${NC}"
 fi
 
 # 1. Start Backend Server (Node.js)

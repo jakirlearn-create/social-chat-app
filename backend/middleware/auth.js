@@ -9,8 +9,10 @@ const auth = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // req.userId: Quick access to user ID (string)
     req.userId = decoded.userId;
-    req.user = decoded; // Add full decoded token to req.user
+    // req.user: Full decoded token object containing {userId, email, role, iat, exp}
+    req.user = decoded;
     next();
   } catch (err) {
     res.status(401).json({ message: 'Token is not valid' });

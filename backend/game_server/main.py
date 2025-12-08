@@ -6,7 +6,7 @@ from pydantic import BaseModel
 import json
 import os
 from datetime import datetime
-from probabilityControl import probability_controller
+from game_server.probabilityControl import probability_controller
 
 app = FastAPI(title="Game Server API")
 

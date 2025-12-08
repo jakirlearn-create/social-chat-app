@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const Post = require('../models/Post');
 const Reaction = require('../models/Reaction');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // Helper function to check if viewer can see post based on privacy
 const canViewPost = async (post, viewerId) => {

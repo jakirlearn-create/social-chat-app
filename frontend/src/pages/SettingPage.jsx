@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './ComingSoon.css';
 
-function SettingPage({ title = 'Coming Soon' }) {
+function SettingPage({ title = 'Settings' }) {
   const navigate = useNavigate();
+  
+  // Redirect to the proper settings page (SettingsPanel)
+  useEffect(() => {
+    navigate('/demo-settings');
+  }, [navigate]);
+
   return (
-    <div className="coming-soon-page">
-      <button className="btn-back-coming-soon" onClick={() => navigate(-1)}>
-        Back
-      </button>
-      <div className="coming-soon-content">
-        <div className="emoji" />
-        <h2>{title}</h2>
-        <p>Update Coming Soon</p>
-        <button className="btn-home" onClick={() => navigate('/profile')}>
-          Return to Profile
-        </button>
-      </div>
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      color: 'white'
+    }}>
+      <p>Redirecting to settings...</p>
     </div>
   );
 }

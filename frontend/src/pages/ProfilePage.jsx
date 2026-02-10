@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import SettingsPanel from './SettingsPanel';
-import './ProfilePage_new.css';
+import './ProfilePage.css';
 
 function ProfilePage() {
   const navigate = useNavigate();

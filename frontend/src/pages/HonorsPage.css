@@ -1,0 +1,257 @@
+.honors-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.honors-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  color: white;
+}
+
+.honors-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.back-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  width: fit-content;
+  transition: all 0.3s;
+}
+
+.back-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.stats-overview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #666;
+}
+
+.honors-section {
+  margin-bottom: 32px;
+}
+
+.honors-section h2 {
+  color: white;
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.honors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.honor-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.honor-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.honor-card.earned {
+  border: 2px solid #4CAF50;
+}
+
+.honor-card.locked {
+  opacity: 0.8;
+}
+
+.honor-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.locked-icon {
+  opacity: 0.4;
+}
+
+.honor-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 8px 0;
+}
+
+.honor-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.honor-badge {
+  background: #4CAF50;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.honor-requirement {
+  margin-top: 12px;
+}
+
+.requirement-text {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s;
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.empty-honors {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: white;
+  font-size: 16px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: white;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-state p {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .honors-page {
+    padding: 16px;
+  }
+
+  .honors-header h1 {
+    font-size: 20px;
+  }
+
+  .stats-overview {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+
+  .stat-icon {
+    font-size: 24px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+  }
+
+  .honors-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .honor-icon {
+    font-size: 40px;
+  }
+
+  .honor-card h3 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-overview {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
